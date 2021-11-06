@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import com.devsuperior.dsvendas.entities.Sale;
 
-public class SaleDTO {
+public class SaleDTO{
     private Long id;
     private Integer visited;
     private Integer deals;
