@@ -1,10 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import Pagination from "components/Pagination";
+import { SetStateAction, useEffect, useState } from "react";
 import { SalePage } from "types/sale";
 import { formatLocalDate } from "utils/format";
 import { BASE_URL } from "utils/requests";
 
 const DataTable = () => {
+
+    const [activePage, setActivePage] = useState<number>(0);
 
     const [page, setPage] = useState<SalePage>({
         first: true,
@@ -14,27 +17,33 @@ const DataTable = () => {
         totalPages: 0
     })
 
+    const changePage = (index: number) => {
+        setActivePage(index);
+    }
+
     useEffect(() => {
-        axios.get(`${BASE_URL}/sales?page=0&size=20&sort=date,desc`)
+        axios.get(`${BASE_URL}/sales?page=${activePage}&size=20&sort=date,desc`)
             .then(response => {
                 setPage(response.data);
             })
-    }, [])
+    }, [activePage])
 
     return (
-        <div className="table-responsive">
-            <table className="table table-striped table-sm">
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Vendedor</th>
-                        <th>Clientes visitados</th>
-                        <th>Negócios fechados</th>
-                        <th>Valor</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
+        <>
+            <Pagination page={page} onPageChange={changePage}/>
+            <div className="table-responsive">
+                <table className="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Vendedor</th>
+                            <th>Clientes visitados</th>
+                            <th>Negócios fechados</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
                         {
                             page.content?.map(item => (
                                 <tr key={item.id}>
@@ -46,12 +55,10 @@ const DataTable = () => {
                                 </tr>
                             ))
                         }
-
-
-                    
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        </>
     );
   }
   
